@@ -9,39 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-public FeatureScaler loadScaler(String meansPath, String stdsPath) {
-    double[] means = loadVector(meansPath);
-    double[] stds = loadVector(stdsPath);
-    return new FeatureScaler(means, stds);
-}
-
-private double[] loadVector(String path) {
-    try {
-        ClassPathResource resource = new ClassPathResource(path);
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-
-            String line;
-            List<Double> vals = new ArrayList<>();
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty() || line.startsWith("#")) continue;
-                vals.add(Double.parseDouble(line));
-            }
-            if (vals.isEmpty()) {
-                throw new IllegalStateException("Empty vector file: " + path);
-            }
-            return vals.stream().mapToDouble(Double::doubleValue).toArray();
-        }
-    } catch (Exception e) {
-        throw new RuntimeException("Failed to load vector from " + path, e);
-    }
-}
-
-
-
 @Component
 public class ModelLoader {
 
@@ -52,7 +19,6 @@ public class ModelLoader {
                     new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
 
                 String line;
-                // read bias (skip comments/blank lines)
                 Double bias = null;
                 List<Double> weights = new ArrayList<>();
 
