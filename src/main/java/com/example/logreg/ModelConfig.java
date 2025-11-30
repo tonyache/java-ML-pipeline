@@ -6,18 +6,23 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ModelConfig {
 
+    private final ModelLoader modelLoader;
+
+    public ModelConfig(ModelLoader modelLoader) {
+        this.modelLoader = modelLoader;
+    }
+	
+
+
+    @Bean
+    public FeatureScaler featureScaler() {
+	return modelLoader.loadScaler("model/means.txt", "model/stds.txt");
+    }
+
+
     @Bean
     public LogisticRegressionModel logisticRegressionModel() {
-        // Tiny OR dataset
-        double[][] X = {
-                {0.0, 0.0},
-                {0.0, 1.0},
-                {1.0, 0.0},
-                {1.0, 1.0}
-        };
-        int[] y = {0, 1, 1, 1};
-
-        LogisticRegressionTrainer trainer = new LogisticRegressionTrainer();
-        return trainer.train(X, y, 5000, 0.1);
+        // file: src/main/resources/model/weights.txt
+        return modelLoader.loadFromResource("model/weights.txt");
     }
 }
