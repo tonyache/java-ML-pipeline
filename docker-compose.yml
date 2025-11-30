@@ -1,0 +1,6 @@
+services:
+  logreg-service:
+    build: .
+    container_name: logreg-service
+    ports:
+      - "8080:8080"
